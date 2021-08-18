@@ -21,6 +21,9 @@ public:
 
 	UFUNCTION()
 	void MoveForward(float AxisValue);
+
+	UFUNCTION()
+	void MoveRight(float AxisValue);
 protected:
 	// Called when the game starts or when spawned
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -50,4 +53,5 @@ public:
 
 private:
 	float TargetForwardAxisValue;
+	float TargetRightAxisValue;
 };

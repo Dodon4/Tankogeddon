@@ -25,4 +25,5 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	void MoveForward(float AxisValue);
+	void MoveRight(float AxisValue);
 };
