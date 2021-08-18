@@ -19,6 +19,8 @@ public:
 	// Sets default values for this pawn's properties
 	ATankPawn();
 
+	UFUNCTION()
+	void MoveForward(float AxisValue);
 protected:
 	// Called when the game starts or when spawned
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -46,7 +48,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+private:
+	float TargetForwardAxisValue;
 };

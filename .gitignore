@@ -1,7 +1,5 @@
-# Ignore everything first
 /*
 
-# Exclude top level required files and dirs
 !/.gitignore
 !/*.uproject
 !/Source
@@ -9,11 +7,3 @@
 !/Content
 !/Config
 !/Plugins
-
-# Ignore everything in Binaries but editor dlls, pdbs, target and module
-Binaries/**/*
-!Binaries/Win64
-!*.dll
-!*.pdb
-!*.modules
-!*.target
