@@ -6,6 +6,10 @@
 #include "GameFramework/Pawn.h"
 #include "TankPawn.generated.h"
 
+class UStaticMeshComponent;
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class TANKOGEDDON_API ATankPawn : public APawn
 {
@@ -17,6 +21,25 @@ public:
 
 protected:
 	// Called when the game starts or when spawned
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UStaticMeshComponent* BodyMesh;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UStaticMeshComponent* TurretMesh;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	USpringArmComponent* SpringArm;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UCameraComponent* Camera;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
+	float MoveSpeed = 100.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
+	float RotationSpeed = 100.f;
+
 	virtual void BeginPlay() override;
 
 public:	
