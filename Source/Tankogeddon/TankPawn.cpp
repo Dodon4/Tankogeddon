@@ -63,6 +63,7 @@ void ATankPawn::SetupCannon()
 
 void ATankPawn::Fire()
 {
+
 	if (Cannon)
 	{
 		Cannon->Fire();

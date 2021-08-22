@@ -27,9 +27,11 @@ protected:
 	float FireRange = 1000;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 	float FireDamage = 1;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 	ECannonType Type = ECannonType::FireProjectile;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammunition;")
+	int Ammunition = 5;
 
 	FTimerHandle ReloadTimerHandle;
 
@@ -39,6 +41,7 @@ public:
 	ACannon();
 
 	void Fire();
+	void SpecialFire();
 	bool IsReadyToFire();
 
 protected:

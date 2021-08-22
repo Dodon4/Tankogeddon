@@ -60,6 +60,7 @@ protected:
 	float TurretRotationInterpolationKey = 0.5f;
 
 
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
 	TSubclassOf<ACannon> CannonClass;
 	UPROPERTY()
