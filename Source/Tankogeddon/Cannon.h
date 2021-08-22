@@ -24,6 +24,10 @@ protected:
 	float FireRate = 1;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+	float FireSpecialRate = 2;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+	float FireSpecialNumber = 3;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 	float FireRange = 1000;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 	float FireDamage = 1;
@@ -34,14 +38,16 @@ protected:
 	int Ammunition = 5;
 
 	FTimerHandle ReloadTimerHandle;
+	FTimerHandle QueueTimerHandle;
 
 	bool bReadyToFire = false;
-
+	int CurrentQueue;
 public:
 	ACannon();
 
 	void Fire();
-	void SpecialFire();
+	void FireSpecial();
+	void Special();
 	bool IsReadyToFire();
 
 protected:

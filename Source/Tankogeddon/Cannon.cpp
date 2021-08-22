@@ -46,24 +46,39 @@ void ACannon::Fire()
 	Ammunition--;
 	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1.f / FireRate, false);
 }
-void ACannon::SpecialFire()
+void ACannon::FireSpecial()
 {
+	if (Ammunition == 0)
+	{
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Red, "Ammunition is empty");
+		return;
+	}
 	if (!bReadyToFire)
 	{
 		return;
 	}
 	bReadyToFire = false;
-
+	CurrentQueue = FireSpecialNumber;
+	GetWorldTimerManager().SetTimer(QueueTimerHandle, this, &ACannon::Special, 1.0f / FireSpecialRate, true);
+	Ammunition--;
+	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1.f / FireRate, false);
+}
+void ACannon::Special()
+{
+	if (--CurrentQueue <= 0)
+	{
+		GetWorldTimerManager().ClearTimer(QueueTimerHandle);
+	}
 	if (Type == ECannonType::FireProjectile)
 	{
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
+		UE_LOG(LogTemp, Warning, TEXT("Special fire"));
 	}
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
+		UE_LOG(LogTemp, Warning, TEXT("Special fire"));
 	}
-
-	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1.f / FireRate, false);
 }
 bool ACannon::IsReadyToFire()
 {

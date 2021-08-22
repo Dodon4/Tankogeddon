@@ -76,6 +76,7 @@ public:
 	
 	UFUNCTION()
 	void Fire();
+	void FireSpecial();
 private:
 	float TargetForwardAxisValue;
 	float TargetRightAxisValue;
