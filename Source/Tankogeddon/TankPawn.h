@@ -53,8 +53,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float RotationSpeed = 100.f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-	float InterpolationKey = 0.1f;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
+	//float InterpolationKey = 0.1f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Speed")
 	float TurretRotationInterpolationKey = 0.5f;

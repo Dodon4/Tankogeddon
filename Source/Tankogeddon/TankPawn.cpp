@@ -118,6 +118,6 @@ void ATankPawn::Tick(float DeltaTime)
 		FRotator currRotation = TurretMesh->GetComponentRotation();
 		targetRotation.Pitch = currRotation.Pitch;
 		targetRotation.Roll = currRotation.Roll;
-		TurretMesh->SetWorldRotation(FMath::Lerp(currRotation, targetRotation, TurretRotationInterpolationKey));
+		TurretMesh->SetWorldRotation(FMath::RInterpTo(currRotation, targetRotation, DeltaTime, RotationSpeed));
 	}
 }
