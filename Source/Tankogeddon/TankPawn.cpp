@@ -60,7 +60,20 @@ void ATankPawn::SetupCannon(TSubclassOf<ACannon> InCannonClass)
 	Cannon = GetWorld()->SpawnActor<ACannon>(InCannonClass, Params);
 	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 }
-
+void ATankPawn::ChangeCannon()
+{
+	TankController = Cast<ATankPlayerController>(GetController());
+	if (CurrentCannon == CannonClass)
+	{
+		SetupCannon(CannonClassSecond);
+		CurrentCannon = CannonClassSecond;
+	}
+	else
+	{
+		SetupCannon(CannonClass);
+		CurrentCannon = CannonClass;
+	}
+}
 void ATankPawn::Fire()
 {
 

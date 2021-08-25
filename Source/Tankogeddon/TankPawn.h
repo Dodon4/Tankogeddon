@@ -63,9 +63,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
 	TSubclassOf<ACannon> CannonClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
+	TSubclassOf<ACannon> CannonClassSecond;
 	UPROPERTY()
 	ACannon* Cannon;
-
 	virtual void BeginPlay() override;
 
 
@@ -82,11 +83,14 @@ public:
 
 	UFUNCTION()
 	void SetupCannon(TSubclassOf<ACannon> InCannonClass);
+
+	UFUNCTION()
+	void ChangeCannon();
 private:
 	float TargetForwardAxisValue;
 	float TargetRightAxisValue;
 	float CurrentRightAxisValue;
-
+	TSubclassOf<ACannon> CurrentCannon;
 	UPROPERTY()
 	ATankPlayerController* TankController;
 };
