@@ -79,13 +79,17 @@ void ATankPawn::ChangeCannon()
 {
 	if (CurrentCannon == CannonClass)
 	{
+		int32 current = Cannon->GetAmmunition();
 		SetupCannon(CannonClassSecond);
 		CurrentCannon = CannonClassSecond;
+		Cannon->SetAmmunition(current);
 	}
 	else
 	{
+		int32 current = Cannon->GetAmmunition();
 		SetupCannon(CannonClass);
 		CurrentCannon = CannonClass;
+		Cannon->SetAmmunition(current);
 	}
 }
 void ATankPawn::Fire()
