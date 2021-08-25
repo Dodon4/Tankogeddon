@@ -97,7 +97,7 @@ private:
 	float TargetRightAxisValue;
 	float CurrentRightAxisValue;
 
-	TSubclassOf<ACannon> CurrentCannon = CannonClass;
+	TSubclassOf<ACannon> CurrentCannon;
 	UPROPERTY()
 	ATankPlayerController* TankController;
 };

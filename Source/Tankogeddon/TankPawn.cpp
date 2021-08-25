@@ -112,7 +112,7 @@ void ATankPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	TankController = Cast<ATankPlayerController>(GetController());
-
+	CurrentCannon = CannonClass;
 	SetupCannon(CannonClass);
 }
 void ATankPawn::RotateRight(float AxisValue)
