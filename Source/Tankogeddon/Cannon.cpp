@@ -157,3 +157,11 @@ void ACannon::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 	GetWorld()->GetTimerManager().ClearTimer(ReloadTimerHandle);
 }
+int ACannon::GetAmmunition()
+{
+	return Ammunition;
+}
+void ACannon::SetAmmunition(int SavedAmmunition)
+{
+	Ammunition = SavedAmmunition;
+}

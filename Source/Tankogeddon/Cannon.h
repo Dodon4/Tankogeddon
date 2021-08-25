@@ -51,7 +51,8 @@ public:
 	void FireSpecial();
 	void Special();
 	bool IsReadyToFire();
-
+	int GetAmmunition();
+	void SetAmmunition(int SavedAmmunition);
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

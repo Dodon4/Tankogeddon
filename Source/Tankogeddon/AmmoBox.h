@@ -15,11 +15,15 @@ class TANKOGEDDON_API AAmmoBox : public AActor
 	GENERATED_BODY()
 	
 protected:
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UStaticMeshComponent* Mesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (ClampMin = 0), Category = "Ammunition")
+	int32 Ammunition = 5;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (EditCondition = "Ammunition <= 0", EditConditionHides), Category = "Components")
+	UStaticMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,meta = (EditCondition = "Ammunition <= 0", EditConditionHides), Category = "Ammo")
 	TSubclassOf<ACannon> CannonClass;
+
 
 public:
 	AAmmoBox();

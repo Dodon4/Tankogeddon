@@ -60,9 +60,23 @@ void ATankPawn::SetupCannon(TSubclassOf<ACannon> InCannonClass)
 	Cannon = GetWorld()->SpawnActor<ACannon>(InCannonClass, Params);
 	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 }
+void ATankPawn::SetNewCannon(TSubclassOf<ACannon> InCannonClass)
+{
+	if (CurrentCannon == CannonClass)
+	{
+		CurrentCannon = InCannonClass;
+		CannonClass = InCannonClass;
+		SetupCannon(CannonClass);
+	}
+	else
+	{
+		CurrentCannon = InCannonClass;
+		CannonClassSecond = InCannonClass;
+		SetupCannon(CannonClassSecond);
+	}
+}
 void ATankPawn::ChangeCannon()
 {
-	TankController = Cast<ATankPlayerController>(GetController());
 	if (CurrentCannon == CannonClass)
 	{
 		SetupCannon(CannonClassSecond);
@@ -133,4 +147,8 @@ void ATankPawn::Tick(float DeltaTime)
 		targetRotation.Roll = currRotation.Roll;
 		TurretMesh->SetWorldRotation(FMath::RInterpTo(currRotation, targetRotation, DeltaTime, RotationSpeed));
 	}
+}
+void ATankPawn::IncreaseAmmunition(int Ammunition)
+{
+	Cannon->SetAmmunition(Cannon->GetAmmunition() + Ammunition);
 }

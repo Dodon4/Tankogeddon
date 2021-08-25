@@ -86,11 +86,18 @@ public:
 
 	UFUNCTION()
 	void ChangeCannon();
+
+	UFUNCTION()
+	void SetNewCannon(TSubclassOf<ACannon> InCannonClass);
+
+	UFUNCTION()
+	void IncreaseAmmunition(int Ammunition);
 private:
 	float TargetForwardAxisValue;
 	float TargetRightAxisValue;
 	float CurrentRightAxisValue;
-	TSubclassOf<ACannon> CurrentCannon;
+
+	TSubclassOf<ACannon> CurrentCannon = CannonClass;
 	UPROPERTY()
 	ATankPlayerController* TankController;
 };
