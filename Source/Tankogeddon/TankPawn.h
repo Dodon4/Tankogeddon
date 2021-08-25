@@ -53,8 +53,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float RotationSpeed = 100.f;
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-	//float InterpolationKey = 0.1f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
+	float InterpolationKey = 0.1f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Speed")
 	float TurretRotationInterpolationKey = 0.5f;
@@ -68,7 +68,7 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	void SetupCannon();
+
 
 public:	
 	// Called every frame
@@ -76,7 +76,12 @@ public:
 	
 	UFUNCTION()
 	void Fire();
+
+	UFUNCTION()
 	void FireSpecial();
+
+	UFUNCTION()
+	void SetupCannon(TSubclassOf<ACannon> InCannonClass);
 private:
 	float TargetForwardAxisValue;
 	float TargetRightAxisValue;
