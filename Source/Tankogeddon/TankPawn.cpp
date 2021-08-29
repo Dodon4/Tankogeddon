@@ -46,7 +46,7 @@ void ATankPawn::MoveForward(float AxisValue)
 //	TargetRightAxisValue = AxisValue;
 //}
 // Called when the game starts or when spawned
-void ATankPawn::SetupCannon()
+void ATankPawn::SetupCannon(TSubclassOf<ACannon> InCannonClass)
 {
 	if (Cannon)
 	{
@@ -57,10 +57,41 @@ void ATankPawn::SetupCannon()
 	FActorSpawnParameters Params;
 	Params.Instigator = this;
 	Params.Owner = this;
-	Cannon = GetWorld()->SpawnActor<ACannon>(CannonClass, Params);
+	Cannon = GetWorld()->SpawnActor<ACannon>(InCannonClass, Params);
 	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 }
-
+void ATankPawn::SetNewCannon(TSubclassOf<ACannon> InCannonClass)
+{
+	if (CurrentCannon == CannonClass)
+	{
+		CurrentCannon = InCannonClass;
+		CannonClass = InCannonClass;
+		SetupCannon(CannonClass);
+	}
+	else
+	{
+		CurrentCannon = InCannonClass;
+		CannonClassSecond = InCannonClass;
+		SetupCannon(CannonClassSecond);
+	}
+}
+void ATankPawn::ChangeCannon()
+{
+	if (CurrentCannon == CannonClass)
+	{
+		int32 current = Cannon->GetAmmunition();
+		SetupCannon(CannonClassSecond);
+		CurrentCannon = CannonClassSecond;
+		Cannon->SetAmmunition(current);
+	}
+	else
+	{
+		int32 current = Cannon->GetAmmunition();
+		SetupCannon(CannonClass);
+		CurrentCannon = CannonClass;
+		Cannon->SetAmmunition(current);
+	}
+}
 void ATankPawn::Fire()
 {
 
@@ -81,8 +112,8 @@ void ATankPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	TankController = Cast<ATankPlayerController>(GetController());
-
-	SetupCannon();
+	CurrentCannon = CannonClass;
+	SetupCannon(CannonClass);
 }
 void ATankPawn::RotateRight(float AxisValue)
 {
@@ -120,4 +151,8 @@ void ATankPawn::Tick(float DeltaTime)
 		targetRotation.Roll = currRotation.Roll;
 		TurretMesh->SetWorldRotation(FMath::RInterpTo(currRotation, targetRotation, DeltaTime, RotationSpeed));
 	}
+}
+void ATankPawn::IncreaseAmmunition(int Ammunition)
+{
+	Cannon->SetAmmunition(Cannon->GetAmmunition() + Ammunition);
 }

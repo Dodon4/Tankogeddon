@@ -53,8 +53,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float RotationSpeed = 100.f;
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-	//float InterpolationKey = 0.1f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
+	float InterpolationKey = 0.1f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Speed")
 	float TurretRotationInterpolationKey = 0.5f;
@@ -63,12 +63,13 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
 	TSubclassOf<ACannon> CannonClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
+	TSubclassOf<ACannon> CannonClassSecond;
 	UPROPERTY()
 	ACannon* Cannon;
-
 	virtual void BeginPlay() override;
 
-	void SetupCannon();
+
 
 public:	
 	// Called every frame
@@ -76,12 +77,27 @@ public:
 	
 	UFUNCTION()
 	void Fire();
+
+	UFUNCTION()
 	void FireSpecial();
+
+	UFUNCTION()
+	void SetupCannon(TSubclassOf<ACannon> InCannonClass);
+
+	UFUNCTION()
+	void ChangeCannon();
+
+	UFUNCTION()
+	void SetNewCannon(TSubclassOf<ACannon> InCannonClass);
+
+	UFUNCTION()
+	void IncreaseAmmunition(int Ammunition);
 private:
 	float TargetForwardAxisValue;
 	float TargetRightAxisValue;
 	float CurrentRightAxisValue;
 
+	TSubclassOf<ACannon> CurrentCannon;
 	UPROPERTY()
 	ATankPlayerController* TankController;
 };
