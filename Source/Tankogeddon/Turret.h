@@ -10,36 +10,17 @@
 #include "Cannon.h"
 #include "DamageTaker.h"
 #include "HealthComponent.h"
+#include "ParentFirePoint.h"
 #include "Turret.generated.h"
 
 class UStaticMeshComponent;
 class UHealthComponent;
 
 UCLASS()
-class TANKOGEDDON_API ATurret : public AActor, public IDamageTaker
+class TANKOGEDDON_API ATurret : public AParentFirePoint
 {
     GENERATED_BODY()
 protected:
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-    UStaticMeshComponent* BodyMesh;
-    
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-    UStaticMeshComponent* TurretMesh;
-    
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-    UArrowComponent* CannonSetupPoint;
-    
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-    UBoxComponent* HitCollider;
-
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-    UHealthComponent* HealthComponent;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
-    TSubclassOf<ACannon> CannonClass;
-
-    UPROPERTY()
-    ACannon* Cannon;
     
     UPROPERTY()
     APawn* PlayerPawn;
@@ -59,18 +40,8 @@ protected:
 
 public:
     ATurret();
-
-    UFUNCTION()
-    void Die();
-
-    UFUNCTION()
-    void DamageTaken(float InDamage);
-
-    UFUNCTION()
-    void TakeDamage(FDamageData DamageData);
 protected:
     virtual void BeginPlay() override;
-    virtual void Destroyed() override;
     void Targeting();
     void RotateToPlayer();
     bool IsPlayerInRange();

@@ -45,13 +45,17 @@ protected:
 
 public:	
     AParentFirePoint();
+
+    UFUNCTION()
     virtual void Die();
 
+    UFUNCTION()
     virtual void DamageTaken(float InDamage);
 
+    UFUNCTION()
     void TakeDamage(FDamageData DamageData);
 protected:
-    virtual void BeginPlay();
-    virtual void Destroyed();
+    virtual void BeginPlay() override;
+    virtual void Destroyed() override;
 
 };

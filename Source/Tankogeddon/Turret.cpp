@@ -48,25 +48,14 @@ ATurret::ATurret()
 // Called when the game starts or when spawned
 void ATurret::BeginPlay()
 {
-	Super::BeginPlay();
+	//Super::BeginPlay();
 
-	FActorSpawnParameters Params;
-	Params.Owner = this;
-	Cannon = GetWorld()->SpawnActor<ACannon>(CannonClass, Params);
-	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	AParentFirePoint::BeginPlay();
 
 	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 
 	FTimerHandle _targetingTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(_targetingTimerHandle, this, &ATurret::Targeting, TargetingRate, true, TargetingRate);
-}
-
-void ATurret::Destroyed()
-{
-	if (Cannon)
-	{
-		Cannon->Destroy();
-	}
 }
 
 void ATurret::Targeting()
@@ -89,8 +78,6 @@ void ATurret::RotateToPlayer()
 	TargetRotation.Pitch = CurrRotation.Pitch;
 	TargetRotation.Roll = CurrRotation.Roll;
 	TurretMesh->SetWorldRotation(FMath::RInterpConstantTo(CurrRotation, TargetRotation,GetWorld()->GetDeltaSeconds(), TargetingSpeed));
-
-
 }
 
 bool ATurret::IsPlayerInRange()
@@ -113,20 +100,4 @@ void ATurret::Fire()
 	{
 		Cannon->Fire();
 	}
-}
-
-void ATurret::TakeDamage(FDamageData DamageData)
-{
-	UE_LOG(LogTankogeddon, Warning, TEXT("Turret %s taked damage:%f "), *GetName(), DamageData.DamageValue);
-	HealthComponent->TakeDamage(DamageData);
-}
-
-void ATurret::Die()
-{
-	Destroy();
-}
-
-void ATurret::DamageTaken(float InDamage)
-{
-	UE_LOG(LogTankogeddon, Warning, TEXT("Turret %s taked damage:%f Health:%f"), *GetName(), InDamage, HealthComponent->GetHealth());
 }
