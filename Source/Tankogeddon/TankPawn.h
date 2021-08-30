@@ -7,7 +7,7 @@
 #include "GameFramework/Pawn.h"
 #include "DamageTaker.h"
 #include "Components/BoxComponent.h"
-//#include "GameStructs.h"
+#include "ParentFirePoint.h"
 #include "HealthComponent.h"
 
 #include "TankPawn.generated.h"
@@ -22,7 +22,7 @@ class ACannon;
 class UHealthComponent;
 
 UCLASS()
-class TANKOGEDDON_API ATankPawn : public APawn, public IDamageTaker
+class TANKOGEDDON_API ATankPawn : public AParentFirePoint
 {
 	GENERATED_BODY()
 
@@ -31,35 +31,19 @@ public:
 	ATankPawn();
 
 	UFUNCTION()
-	void MoveForward(float AxisValue);
+		void MoveForward(float AxisValue);
 
 	UFUNCTION()
-	void RotateRight(float AxisValue);
+		void RotateRight(float AxisValue);
 
 	//UFUNCTION()
 	//void MoveRight(float AxisValue);
 protected:
-	// Called when the game starts or when spawned
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UStaticMeshComponent* BodyMesh;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UStaticMeshComponent* TurretMesh;
-
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* Camera;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UArrowComponent* CannonSetupPoint;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UHealthComponent* HealthComponent;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UBoxComponent* HitCollider;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float MoveSpeed = 100.f;
@@ -73,21 +57,14 @@ protected:
 	float TurretRotationInterpolationKey = 0.5f;
 
 
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
-	TSubclassOf<ACannon> CannonClass;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
 	TSubclassOf<ACannon> CannonClassSecond;
-	UPROPERTY()
-	ACannon* Cannon;
+
 	virtual void BeginPlay() override;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
-	UFUNCTION()
-	void Fire();
 
 	UFUNCTION()
 	void FireSpecial();
@@ -104,14 +81,6 @@ public:
 	UFUNCTION()
 	void IncreaseAmmunition(int Ammunition);
 
-	UFUNCTION()
-	void Die();
-
-	UFUNCTION()
-	void DamageTaken(float InDamage);
-
-	UFUNCTION()
-	void TakeDamage(FDamageData DamageData);
 private:
 	float TargetForwardAxisValue;
 	float TargetRightAxisValue;

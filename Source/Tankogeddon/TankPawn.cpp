@@ -48,21 +48,6 @@ ATankPawn::ATankPawn()
 	HitCollider->SetupAttachment(BodyMesh);
 }
 
-void ATankPawn::TakeDamage(FDamageData DamageData)
-{
-	HealthComponent->TakeDamage(DamageData);
-}
-
-void ATankPawn::Die()
-{
-	Destroy();
-}
-
-void ATankPawn::DamageTaken(float InDamage)
-{
-	UE_LOG(LogTankogeddon, Warning, TEXT("Tank %s taked damage:%f Health:%f"), *GetName(), InDamage, HealthComponent->GetHealth());
-}
-
 
 void ATankPawn::MoveForward(float AxisValue)
 {
@@ -119,14 +104,6 @@ void ATankPawn::ChangeCannon()
 		Cannon->SetAmmunition(current);
 	}
 }
-void ATankPawn::Fire()
-{
-
-	if (Cannon)
-	{
-		Cannon->Fire();
-	}
-}
 void ATankPawn::FireSpecial()
 {
 	if (Cannon)
@@ -137,10 +114,7 @@ void ATankPawn::FireSpecial()
 
 void ATankPawn::BeginPlay()
 {
-	Super::BeginPlay();
-	TankController = Cast<ATankPlayerController>(GetController());
-	CurrentCannon = CannonClass;
-	SetupCannon(CannonClass);
+	AParentFirePoint::BeginPlay();
 }
 void ATankPawn::RotateRight(float AxisValue)
 {

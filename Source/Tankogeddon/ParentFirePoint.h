@@ -14,7 +14,7 @@ class ACannon;
 class UHealthComponent;
 
 UCLASS()
-class TANKOGEDDON_API AParentFirePoint : public AActor, public IDamageTaker
+class TANKOGEDDON_API AParentFirePoint : public APawn, public IDamageTaker
 {
 	GENERATED_BODY()
 	
@@ -54,8 +54,10 @@ public:
 
     UFUNCTION()
     void TakeDamage(FDamageData DamageData);
+
+    UFUNCTION()
+    void Fire();
 protected:
     virtual void BeginPlay() override;
     virtual void Destroyed() override;
-    void Fire();
 };
