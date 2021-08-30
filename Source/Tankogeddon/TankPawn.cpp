@@ -115,6 +115,10 @@ void ATankPawn::FireSpecial()
 void ATankPawn::BeginPlay()
 {
 	AParentFirePoint::BeginPlay();
+	TankController = Cast<ATankPlayerController>(GetController());
+	CurrentCannon = CannonClass;
+	//SetupCannon(CannonClass);
+
 }
 void ATankPawn::RotateRight(float AxisValue)
 {
