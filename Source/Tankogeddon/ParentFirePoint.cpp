@@ -47,3 +47,10 @@ AParentFirePoint::AParentFirePoint()
 {
 
 }
+void AParentFirePoint::Fire()
+{
+	if (Cannon)
+	{
+		Cannon->Fire();
+	}
+}

@@ -93,11 +93,3 @@ bool ATurret::CanFire()
 	float AimAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(TargetingDir, DirToPlayer)));
 	return AimAngle <= Accurency;
 }		
-
-void ATurret::Fire()
-{
-	if (Cannon)
-	{
-		Cannon->Fire();
-	}
-}
