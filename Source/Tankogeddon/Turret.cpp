@@ -9,6 +9,7 @@
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
 #include "HealthComponent.h"
+#include "Tankogeddon.h"
 
 // Sets default values
 ATurret::ATurret()
@@ -116,7 +117,7 @@ void ATurret::Fire()
 
 void ATurret::TakeDamage(FDamageData DamageData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Turret %s taked damage:%f "), *GetName(), DamageData.DamageValue);
+	UE_LOG(LogTankogeddon, Warning, TEXT("Turret %s taked damage:%f "), *GetName(), DamageData.DamageValue);
 	HealthComponent->TakeDamage(DamageData);
 }
 
@@ -127,5 +128,5 @@ void ATurret::Die()
 
 void ATurret::DamageTaken(float InDamage)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Turret %s taked damage:%f Health:%f"), *GetName(), InDamage, HealthComponent->GetHealth());
+	UE_LOG(LogTankogeddon, Warning, TEXT("Turret %s taked damage:%f Health:%f"), *GetName(), InDamage, HealthComponent->GetHealth());
 }
