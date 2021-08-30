@@ -8,7 +8,7 @@
 #include "Engine/Engine.h"
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
-
+#include "DamageTaker.h"
 ACannon::ACannon()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -64,9 +64,17 @@ void ACannon::Fire()
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility, TraceParams))
 		{
 			DrawDebugLine(GetWorld(), Start, HitResult.Location, FColor::Red, false, 0.5f, 0, 5);
-			if (HitResult.Actor.Get())
+			if (IDamageTaker* DamageTaker = Cast<IDamageTaker>(HitResult.Actor.Get()))
 			{
-				HitResult.Actor.Get()->Destroy();
+				AActor* MyInstigator = GetInstigator();
+				if (HitResult.Actor.Get() != MyInstigator)
+				{
+					FDamageData DamageData;
+					DamageData.DamageValue = FireDamage;
+					DamageData.DamageMaker = this;
+					DamageData.Instigator = MyInstigator;
+					DamageTaker->TakeDamage(DamageData);
+				}
 			}
 		}
 		else
@@ -126,9 +134,18 @@ void ACannon::Special()
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility, TraceParams))
 		{
 			DrawDebugLine(GetWorld(), Start, HitResult.Location, FColor::Red, false, 0.5f, 0, 5);
-			if (HitResult.Actor.Get())
+			DrawDebugLine(GetWorld(), Start, HitResult.Location, FColor::Red, false, 0.5f, 0, 5);
+			if (IDamageTaker* DamageTaker = Cast<IDamageTaker>(HitResult.Actor.Get()))
 			{
-				HitResult.Actor.Get()->Destroy();
+				AActor* MyInstigator = GetInstigator();
+				if (HitResult.Actor.Get() != MyInstigator)
+				{
+					FDamageData DamageData;
+					DamageData.DamageValue = FireDamage;
+					DamageData.DamageMaker = this;
+					DamageData.Instigator = MyInstigator;
+					DamageTaker->TakeDamage(DamageData);
+				}
 			}
 		}
 		else
