@@ -7,10 +7,14 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
+#include "Components/BoxComponent.h"
 
+#include "HealthComponent.h"
 #include "Tankogeddon.h"
 #include "TankPlayerController.h"
 #include "Cannon.h"
+//#include "GameStructs.h"
+
 // Sets default values
 ATankPawn::ATankPawn()
 {
@@ -35,7 +39,15 @@ ATankPawn::ATankPawn()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health component"));
+	HealthComponent->OnDie.AddDynamic(this, &ATankPawn::Die);
+	HealthComponent->OnDamaged.AddDynamic(this, &ATankPawn::DamageTaken);
+
+	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
+	HitCollider->SetupAttachment(BodyMesh);
 }
+
 
 void ATankPawn::MoveForward(float AxisValue)
 {
@@ -92,14 +104,6 @@ void ATankPawn::ChangeCannon()
 		Cannon->SetAmmunition(current);
 	}
 }
-void ATankPawn::Fire()
-{
-
-	if (Cannon)
-	{
-		Cannon->Fire();
-	}
-}
 void ATankPawn::FireSpecial()
 {
 	if (Cannon)
@@ -110,10 +114,11 @@ void ATankPawn::FireSpecial()
 
 void ATankPawn::BeginPlay()
 {
-	Super::BeginPlay();
+	AParentFirePoint::BeginPlay();
 	TankController = Cast<ATankPlayerController>(GetController());
 	CurrentCannon = CannonClass;
-	SetupCannon(CannonClass);
+	//SetupCannon(CannonClass);
+
 }
 void ATankPawn::RotateRight(float AxisValue)
 {

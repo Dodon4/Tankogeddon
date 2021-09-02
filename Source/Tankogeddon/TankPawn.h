@@ -5,16 +5,24 @@
 #include "Cannon.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "DamageTaker.h"
+#include "Components/BoxComponent.h"
+#include "ParentFirePoint.h"
+#include "HealthComponent.h"
+
 #include "TankPawn.generated.h"
+
+
 
 class UStaticMeshComponent;
 class UCameraComponent;
 class USpringArmComponent;
 class ATankPlayerController;
 class ACannon;
+class UHealthComponent;
 
 UCLASS()
-class TANKOGEDDON_API ATankPawn : public APawn
+class TANKOGEDDON_API ATankPawn : public AParentFirePoint
 {
 	GENERATED_BODY()
 
@@ -23,30 +31,19 @@ public:
 	ATankPawn();
 
 	UFUNCTION()
-	void MoveForward(float AxisValue);
+		void MoveForward(float AxisValue);
 
 	UFUNCTION()
-	void RotateRight(float AxisValue);
+		void RotateRight(float AxisValue);
 
 	//UFUNCTION()
 	//void MoveRight(float AxisValue);
 protected:
-	// Called when the game starts or when spawned
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UStaticMeshComponent* BodyMesh;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UStaticMeshComponent* TurretMesh;
-
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* Camera;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	UArrowComponent* CannonSetupPoint;
-
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 	float MoveSpeed = 100.f;
@@ -60,23 +57,14 @@ protected:
 	float TurretRotationInterpolationKey = 0.5f;
 
 
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
-	TSubclassOf<ACannon> CannonClass;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
 	TSubclassOf<ACannon> CannonClassSecond;
-	UPROPERTY()
-	ACannon* Cannon;
+
 	virtual void BeginPlay() override;
-
-
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
-	UFUNCTION()
-	void Fire();
 
 	UFUNCTION()
 	void FireSpecial();
@@ -92,6 +80,7 @@ public:
 
 	UFUNCTION()
 	void IncreaseAmmunition(int Ammunition);
+
 private:
 	float TargetForwardAxisValue;
 	float TargetRightAxisValue;
@@ -100,4 +89,6 @@ private:
 	TSubclassOf<ACannon> CurrentCannon;
 	UPROPERTY()
 	ATankPlayerController* TankController;
+
+
 };
