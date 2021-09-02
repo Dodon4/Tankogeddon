@@ -5,12 +5,19 @@
 #include "CoreMinimal.h"
 #include "GameStructs.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/ForceFeedbackEffect.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Components/AudioComponent.h"
 #include "Cannon.generated.h"
+
 
 class UStaticMeshComponent;
 class UArrowComponent;
 class AProjectile;
-
+class UParticleSystemComponent;
+class UAudioComponent;
+class UForceFeedbackEffect;
+class UMatineeCameraShake;
 UCLASS()
 class TANKOGEDDON_API ACannon : public AActor
 {
@@ -20,6 +27,12 @@ protected:
 	UStaticMeshComponent* Mesh;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UArrowComponent* ProjectileSpawnPoint;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UParticleSystemComponent* ShootEffect;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UAudioComponent* AudioEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 	TSubclassOf<AProjectile> ProjectileClass;
@@ -35,6 +48,12 @@ protected:
 	float FireDamage = 1;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 	ECannonType Type = ECannonType::FireProjectile;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UForceFeedbackEffect* ShootForceEffect;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UMatineeCameraShake> ShootShake;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammunition;")
 	int Ammunition = 5;

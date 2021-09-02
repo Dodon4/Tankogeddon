@@ -150,14 +150,28 @@ void ATankPawn::Tick(float DeltaTime)
 	if (TankController)
 	{
 		FVector mousePos = TankController->GetMousePos();
-		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), mousePos);
-		FRotator currRotation = TurretMesh->GetComponentRotation();
-		targetRotation.Pitch = currRotation.Pitch;
-		targetRotation.Roll = currRotation.Roll;
-		TurretMesh->SetWorldRotation(FMath::RInterpTo(currRotation, targetRotation, DeltaTime, RotationSpeed));
+		RotateTurretTo(mousePos);
 	}
 }
 void ATankPawn::IncreaseAmmunition(int Ammunition)
 {
 	Cannon->SetAmmunition(Cannon->GetAmmunition() + Ammunition);
+}
+
+FVector ATankPawn::GetTurretForwardVector()
+{
+	return TurretMesh->GetForwardVector();
+}
+
+void ATankPawn::RotateTurretTo(FVector TargetPosition)
+{
+	FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetPosition);
+	FRotator CurrRotation = TurretMesh->GetComponentRotation();
+	TargetRotation.Pitch = CurrRotation.Pitch;
+	TargetRotation.Roll = CurrRotation.Roll;
+	TurretMesh->SetWorldRotation(FMath::Lerp(CurrRotation, TargetRotation, TurretRotationInterpolationKey));
+}
+FVector ATankPawn::GetEyesPosition()
+{
+	return CannonSetupPoint->GetComponentLocation();
 }

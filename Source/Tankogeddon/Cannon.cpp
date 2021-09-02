@@ -9,6 +9,10 @@
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
 #include "DamageTaker.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Components/AudioComponent.h"
+#include "Camera/CameraShake.h"
+
 ACannon::ACannon()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -22,7 +26,12 @@ ACannon::ACannon()
 	ProjectileSpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("Spawn point"));
 	ProjectileSpawnPoint->SetupAttachment(Mesh);
 
+	ShootEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shoot effect"));
+	ShootEffect->SetupAttachment(ProjectileSpawnPoint);
 
+
+	AudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio effect"));
+	AudioEffect->SetupAttachment(ProjectileSpawnPoint);
 }
 
 void ACannon::Fire()
@@ -37,6 +46,25 @@ void ACannon::Fire()
 		return;
 	}
 	bReadyToFire = false;
+
+	ShootEffect->ActivateSystem();
+	AudioEffect->Play();
+
+	if (GetOwner() && GetOwner() == GetWorld()->GetFirstPlayerController()->GetPawn())
+	{
+		if (ShootForceEffect)
+		{
+			FForceFeedbackParameters ShootForceEffectParams;
+			ShootForceEffectParams.bLooping = false;
+			ShootForceEffectParams.Tag = "ShootForceEffectParams";
+			GetWorld()->GetFirstPlayerController()->ClientPlayForceFeedback(ShootForceEffect, ShootForceEffectParams);
+		}
+
+		if (ShootShake)
+		{
+			GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(ShootShake);
+		}
+	}
 
 	if (Type == ECannonType::FireProjectile)
 	{
