@@ -12,9 +12,11 @@
 #include "HealthComponent.h"
 #include "ParentFirePoint.h"
 #include "Turret.generated.h"
+//#include "TankPawn.h"
 
 class UStaticMeshComponent;
 class UHealthComponent;
+class ATankPawn;
 
 UCLASS()
 class TANKOGEDDON_API ATurret : public AParentFirePoint
@@ -24,6 +26,9 @@ protected:
     
     UPROPERTY()
     APawn* PlayerPawn;
+
+    //UPROPERTY()
+    //ATankPawn* TankPawn;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Targeting")
     float TargetingRange = 1000;
@@ -46,5 +51,6 @@ protected:
     void RotateToPlayer();
     bool IsPlayerInRange();
     bool CanFire();
-
+    bool DetectPlayerVisibility();
+    FVector GetEyesPosition();
 };

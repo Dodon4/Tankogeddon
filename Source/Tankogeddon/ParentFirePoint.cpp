@@ -11,6 +11,7 @@
 #include "Components/BoxComponent.h"
 #include "HealthComponent.h"
 #include "Tankogeddon.h"
+#include "AmmoBox.h"
 
 void AParentFirePoint::TakeDamage(FDamageData DamageData)
 {
@@ -20,12 +21,20 @@ void AParentFirePoint::TakeDamage(FDamageData DamageData)
 
 void AParentFirePoint::Die()
 {
+	DestroyEffect->ActivateSystem();
+	DestroyAudioEffect->Play();
+	AAmmoBox* Projectile = GetWorld()->SpawnActor<AAmmoBox>(AmmoboxClass, GetActorLocation(), GetActorRotation());
 	Destroy();
 }
 
 void AParentFirePoint::DamageTaken(float InDamage)
 {
 	UE_LOG(LogTankogeddon, Warning, TEXT("Turret %s taked damage:%f Health:%f"), *GetName(), InDamage, HealthComponent->GetHealth());
+	if (this == GetWorld()->GetFirstPlayerController()->GetPawn())
+	{
+		DestroyEffect->ActivateSystem();
+		DestroyAudioEffect->Play();
+	}
 }
 void AParentFirePoint::BeginPlay()
 {
@@ -45,7 +54,12 @@ void AParentFirePoint::Destroyed()
 }
 AParentFirePoint::AParentFirePoint()
 {
+	DestroyEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shoot effect"));
+	DestroyEffect->SetupAttachment(BodyMesh);
 
+
+	DestroyAudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio effect"));
+	DestroyAudioEffect->SetupAttachment(BodyMesh);
 }
 void AParentFirePoint::Fire()
 {

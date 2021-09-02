@@ -7,11 +7,16 @@
 #include "Cannon.h"
 #include "DamageTaker.h"
 #include "Components/BoxComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Components/AudioComponent.h"
+#include "AmmoBox.h"
 #include "ParentFirePoint.generated.h"
 
 class UStaticMeshComponent;
 class ACannon;
 class UHealthComponent;
+class UParticleSystemComponent;
+class UAudioComponent;
 
 UCLASS()
 class TANKOGEDDON_API AParentFirePoint : public APawn, public IDamageTaker
@@ -29,6 +34,12 @@ protected:
     UStaticMeshComponent* TurretMesh;
 
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+    UParticleSystemComponent* DestroyEffect;
+
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+    UAudioComponent* DestroyAudioEffect;
+
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
     UArrowComponent* CannonSetupPoint;
 
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -40,6 +51,8 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
     TSubclassOf<ACannon> CannonClass;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
+    TSubclassOf<AAmmoBox> AmmoboxClass;
     UPROPERTY()
     ACannon* Cannon;
 

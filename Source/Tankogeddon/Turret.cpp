@@ -10,7 +10,8 @@
 #include "Components/BoxComponent.h"
 #include "HealthComponent.h"
 #include "Tankogeddon.h"
-
+#include "DrawDebugHelpers.h"
+#include "TankPawn.h"
 // Sets default values
 ATurret::ATurret()
 {
@@ -52,6 +53,8 @@ void ATurret::BeginPlay()
 
 	AParentFirePoint::BeginPlay();
 
+	//TankPawn = Cast<ATankPawn>(GetPawn());
+
 	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 
 	FTimerHandle _targetingTimerHandle;
@@ -87,9 +90,38 @@ bool ATurret::IsPlayerInRange()
 
 bool ATurret::CanFire()
 {
+	if (!DetectPlayerVisibility())
+	{
+		return false;
+	}
 	FVector TargetingDir = TurretMesh->GetForwardVector();
 	FVector DirToPlayer = PlayerPawn->GetActorLocation() - GetActorLocation();
 	DirToPlayer.Normalize();
 	float AimAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(TargetingDir, DirToPlayer)));
 	return AimAngle <= Accurency;
 }		
+bool ATurret::DetectPlayerVisibility()
+{
+	FVector PlayerPos = PlayerPawn->GetActorLocation();
+	FVector EyesPos = this->GetEyesPosition();
+
+	FHitResult HitResult;
+	FCollisionQueryParams TraceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
+	TraceParams.bTraceComplex = true;
+	TraceParams.bReturnPhysicalMaterial = false;
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, EyesPos, PlayerPos, ECollisionChannel::ECC_Visibility, TraceParams))
+	{
+		if (HitResult.Actor.Get())
+		{
+			DrawDebugLine(GetWorld(), EyesPos, HitResult.Location, FColor::Cyan, false, 0.5f, 0, 10);
+			return HitResult.Actor.Get() == PlayerPawn;
+		}
+	}
+	DrawDebugLine(GetWorld(), EyesPos, PlayerPos, FColor::Cyan, false, 0.5f, 0, 10);
+	return false;
+}
+FVector ATurret::GetEyesPosition()
+{
+	return CannonSetupPoint->GetComponentLocation();
+}
