@@ -10,6 +10,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/AudioComponent.h"
 #include "AmmoBox.h"
+#include "TimerManager.h"
 #include "ParentFirePoint.generated.h"
 
 class UStaticMeshComponent;
@@ -56,6 +57,8 @@ protected:
     UPROPERTY()
     ACannon* Cannon;
 
+    FTimerHandle DestroyTimerHandle;
+
 public:	
     AParentFirePoint();
 
@@ -67,6 +70,9 @@ public:
 
     UFUNCTION()
     void TakeDamage(FDamageData DamageData);
+
+    UFUNCTION()
+    void KillExposion();
 
     UFUNCTION()
     void Fire();

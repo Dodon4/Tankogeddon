@@ -12,6 +12,7 @@
 #include "HealthComponent.h"
 #include "Tankogeddon.h"
 #include "AmmoBox.h"
+#include "TimerManager.h"
 
 void AParentFirePoint::TakeDamage(FDamageData DamageData)
 {
@@ -24,9 +25,13 @@ void AParentFirePoint::Die()
 	DestroyEffect->ActivateSystem();
 	DestroyAudioEffect->Play();
 	AAmmoBox* Projectile = GetWorld()->SpawnActor<AAmmoBox>(AmmoboxClass, GetActorLocation(), GetActorRotation());
+	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &AParentFirePoint::KillExposion, 1.f, false);
+	//Destroy();
+}
+void AParentFirePoint::KillExposion()
+{
 	Destroy();
 }
-
 void AParentFirePoint::DamageTaken(float InDamage)
 {
 	UE_LOG(LogTankogeddon, Warning, TEXT("Turret %s taked damage:%f Health:%f"), *GetName(), InDamage, HealthComponent->GetHealth());
@@ -44,7 +49,9 @@ void AParentFirePoint::BeginPlay()
 	Params.Owner = this;
 	Cannon = GetWorld()->SpawnActor<ACannon>(CannonClass, Params);
 	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
 }
+
 void AParentFirePoint::Destroyed()
 {
 	if (Cannon)
