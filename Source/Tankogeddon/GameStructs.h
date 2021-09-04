@@ -22,4 +22,8 @@ struct FDamageData
 
     UPROPERTY()
     AActor* DamageMaker;
+
+
+    UPROPERTY()
+    FVector HitLocation;
 };

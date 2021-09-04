@@ -11,13 +11,16 @@
 #include "Components/AudioComponent.h"
 #include "AmmoBox.h"
 #include "TimerManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
 #include "ParentFirePoint.generated.h"
 
 class UStaticMeshComponent;
 class ACannon;
 class UHealthComponent;
 class UParticleSystemComponent;
-class UAudioComponent;
+class UParticleSystem;
+class USoundBase;
 
 UCLASS()
 class TANKOGEDDON_API AParentFirePoint : public APawn, public IDamageTaker
@@ -34,11 +37,11 @@ protected:
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
     UStaticMeshComponent* TurretMesh;
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-    UParticleSystemComponent* DestroyEffect;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects")
+    UParticleSystem* DestuctionParticleSystem;
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-    UAudioComponent* DestroyAudioEffect;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+    USoundBase* DestructionSound;
 
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
     UArrowComponent* CannonSetupPoint;
