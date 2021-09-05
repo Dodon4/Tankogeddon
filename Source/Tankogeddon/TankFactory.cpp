@@ -9,7 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Tankogeddon.h"
 #include "MapLoader.h"
-
+#include "DestroyedFactory.h"
 ATankFactory::ATankFactory()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -55,6 +55,11 @@ void ATankFactory::Die()
 	{
 		LinkedMapLoader->SetIsActivated(true);
 	}
+	FTransform SpawnTransform(BuildingMesh->GetComponentRotation(), BuildingMesh->GetComponentLocation());
+	ADestroyedFactory* DestroyedFac = GetWorld()->SpawnActorDeferred<ADestroyedFactory>(Destroyed, SpawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+
+	UGameplayStatics::FinishSpawningActor(DestroyedFac, SpawnTransform);
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DestuctionParticleSystem, GetActorTransform());
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), DestructionSound, GetActorLocation());
 	Destroy();
@@ -73,4 +78,7 @@ void ATankFactory::SpawnNewTank()
 	NewTank->SetPatrollingPoints(TankWayPoints);
 	
 	UGameplayStatics::FinishSpawningActor(NewTank, SpawnTransform);
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SpawnParticleSystem, SpawnTransform);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), SpawnSound, GetActorLocation());
 }

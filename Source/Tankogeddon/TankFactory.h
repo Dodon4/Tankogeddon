@@ -2,13 +2,11 @@
 
 #pragma once
 
-#pragma once
-
 #include "CoreMinimal.h"
 #include "TankPawn.h"
 #include "Engine/TargetPoint.h"
 #include "GameFramework/Actor.h"
-#include "Engine/StaticMesh.h"
+#include "DestroyedFactory.h"
 #include "TankFactory.generated.h"
 
 
@@ -21,7 +19,7 @@ class ATargetPoint;
 class AMapLoader;
 class UParticleSystem;
 class USoundBase;
-class UStaticMesh;
+class ADestroyedFactory;
 
 UCLASS()
 class TANKOGEDDON_API ATankFactory : public AActor, public IDamageTaker
@@ -47,7 +45,13 @@ protected:
 	USoundBase* DestructionSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects")
-	UStaticMesh* DestuctionFactory;
+	UParticleSystem* SpawnParticleSystem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	USoundBase* SpawnSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects")
+	TSubclassOf<ADestroyedFactory> Destroyed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn tanks params")
 	TSubclassOf<ATankPawn> SpawnTankClass;
