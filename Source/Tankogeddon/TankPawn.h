@@ -62,6 +62,13 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Patrol points", Meta = (MakeEditWidget = true))
+	TArray<FVector> PatrollingPoints;
+		
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Accurency")
+
+	float MovementAccurency = 50;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -80,6 +87,26 @@ public:
 
 	UFUNCTION()
 	void IncreaseAmmunition(int Ammunition);
+
+	UFUNCTION()
+	const TArray<FVector>& GetPatrollingPoints() 
+	{ 
+		return PatrollingPoints;
+	};
+
+	UFUNCTION()
+	float GetMovementAccurency() 
+	{
+		return MovementAccurency; 
+	};
+	UFUNCTION()
+	FVector GetTurretForwardVector();
+
+	UFUNCTION()
+	void RotateTurretTo(FVector TargetPosition);
+
+	UFUNCTION()
+	FVector GetEyesPosition();
 
 private:
 	float TargetForwardAxisValue;
