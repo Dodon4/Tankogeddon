@@ -18,7 +18,6 @@
 class UStaticMeshComponent;
 class ACannon;
 class UHealthComponent;
-class UParticleSystemComponent;
 class UParticleSystem;
 class USoundBase;
 
@@ -60,8 +59,6 @@ protected:
     UPROPERTY()
     ACannon* Cannon;
 
-    FTimerHandle DestroyTimerHandle;
-
 public:	
     AParentFirePoint();
 
@@ -73,9 +70,6 @@ public:
 
     UFUNCTION()
     void TakeDamage(FDamageData DamageData);
-
-    UFUNCTION()
-    void KillExposion();
 
     UFUNCTION()
     void Fire();

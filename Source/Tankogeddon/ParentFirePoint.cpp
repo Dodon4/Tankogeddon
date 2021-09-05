@@ -26,7 +26,12 @@ void AParentFirePoint::Die()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DestuctionParticleSystem, GetActorTransform());
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), DestructionSound, GetActorLocation());
-	AAmmoBox* Projectile = GetWorld()->SpawnActor<AAmmoBox>(AmmoboxClass, GetActorLocation(), GetActorRotation());
+	if (AmmoboxClass)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.bNoFail = true;
+		GetWorld()->SpawnActor<AAmmoBox>(AmmoboxClass, GetActorTransform(), SpawnParams);
+	}
 	Destroy();
 }
 
