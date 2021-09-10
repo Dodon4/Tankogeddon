@@ -114,11 +114,11 @@ bool ATurret::DetectPlayerVisibility()
 	{
 		if (HitResult.Actor.Get())
 		{
-			DrawDebugLine(GetWorld(), EyesPos, HitResult.Location, FColor::Cyan, false, 0.5f, 0, 10);
+			//DrawDebugLine(GetWorld(), EyesPos, HitResult.Location, FColor::Cyan, false, 0.5f, 0, 10);
 			return HitResult.Actor.Get() == PlayerPawn;
 		}
 	}
-	DrawDebugLine(GetWorld(), EyesPos, PlayerPos, FColor::Cyan, false, 0.5f, 0, 10);
+	//DrawDebugLine(GetWorld(), EyesPos, PlayerPos, FColor::Cyan, false, 0.5f, 0, 10);
 	return false;
 }
 FVector ATurret::GetEyesPosition()

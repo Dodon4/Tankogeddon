@@ -7,6 +7,8 @@
 #include <Engine/World.h>
 #include <Components/SceneComponent.h>
 #include "DamageTaker.h"
+#include <Components/PrimitiveComponent.h>
+
 // Sets default values
 AProjectile::AProjectile()
 {
@@ -46,6 +48,16 @@ void AProjectile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
         DamageData.DamageMaker = this;
         DamageData.Instigator = GetInstigator();
 		DamageTaker->TakeDamage(DamageData);
+	}
+	else
+	{
+		UPrimitiveComponent* PrimComp = Cast<UPrimitiveComponent>(OtherComp);
+		if (PrimComp && PrimComp->IsSimulatingPhysics())
+		{
+			FVector ForceVector = GetActorForwardVector();
+			PrimComp->AddImpulseAtLocation(ForceVector * PushForce, SweepResult.ImpactPoint);
+		}
+
 	}
 	Destroy();
 }
