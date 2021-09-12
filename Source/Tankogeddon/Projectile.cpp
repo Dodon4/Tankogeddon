@@ -57,6 +57,10 @@ void AProjectile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 			FVector ForceVector = GetActorForwardVector();
 			PrimComp->AddImpulseAtLocation(ForceVector * PushForce, SweepResult.ImpactPoint);
 		}
+        if (bExplode)
+        {
+            Explode();
+        }
 
 	}
 	Destroy();
@@ -66,4 +70,71 @@ void AProjectile::Move()
 {
 	FVector NextPosition = GetActorLocation() + GetActorForwardVector() * MoveSpeed * MoveRate;
 	SetActorLocation(NextPosition);
+}
+
+
+void AProjectile::Explode()
+{
+    FVector StartPos = GetActorLocation();
+    FVector EndPos = StartPos + FVector(0.1f);
+
+    FCollisionShape Shape = FCollisionShape::MakeSphere(ExplodeRadius);
+    FCollisionQueryParams Params = FCollisionQueryParams::DefaultQueryParam;
+    Params.AddIgnoredActor(this);
+    Params.bTraceComplex = true;
+    Params.TraceTag = "Explode Trace";
+    TArray<FHitResult> AttackHit;
+
+    FQuat Rotation = FQuat::Identity;
+
+    bool SweepResult = GetWorld()->SweepMultiByChannel
+    (
+        AttackHit,
+        StartPos,
+        EndPos,
+        Rotation,
+        ECollisionChannel::ECC_Visibility,
+        Shape,
+        Params
+    );
+
+    GetWorld()->DebugDrawTraceTag = "Explode Trace";
+
+    if (SweepResult)
+    {
+        for (FHitResult HitResult : AttackHit)
+        {
+            AActor* OtherActor = HitResult.GetActor();
+            if (!OtherActor)
+            {
+                continue;
+            }
+
+            IDamageTaker* DamageTakerActor = Cast<IDamageTaker>(OtherActor);
+            if (DamageTakerActor)
+            {
+                FDamageData DamageData;
+                DamageData.DamageValue = Damage;
+                DamageData.Instigator = GetOwner();
+                DamageData.DamageMaker = this;
+
+                DamageTakerActor->TakeDamage(DamageData);
+            }
+            else
+            {
+                UPrimitiveComponent* PrimComp = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
+                if (PrimComp)
+                {
+                    if (PrimComp->IsSimulatingPhysics())
+                    {
+                        FVector ForceVector = OtherActor->GetActorLocation() - GetActorLocation();
+                        ForceVector.Normalize();
+                        PrimComp->AddImpulse(ForceVector * PushForce, NAME_None, true);
+                    }
+                }
+            }
+
+        }
+    }
+
 }

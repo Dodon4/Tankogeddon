@@ -27,10 +27,18 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
     float PushForce = 1000.f;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
+    bool bExplode = false;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (EditCondition = "bExplode == true", EditConditionHides), Category = "Damage")
+    float ExplodeRadius = 50.f;
+
     FTimerHandle MovementTimerHandle;
 
 public:
     AProjectile();
+
+    void Explode();
 
     virtual void Start();
 
