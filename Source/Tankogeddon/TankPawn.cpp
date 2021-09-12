@@ -8,7 +8,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
-
+#include <Engine/TargetPoint.h>
 #include "HealthComponent.h"
 #include "Tankogeddon.h"
 #include "TankPlayerController.h"
@@ -174,4 +174,18 @@ void ATankPawn::RotateTurretTo(FVector TargetPosition)
 FVector ATankPawn::GetEyesPosition()
 {
 	return CannonSetupPoint->GetComponentLocation();
+}
+TArray<FVector> ATankPawn::GetPatrollingPoints()
+{
+	TArray<FVector> Result;
+	for (ATargetPoint* Point : PatrollingPoints)
+	{
+		Result.Add(Point->GetActorLocation());
+	}
+
+	return Result;
+}
+void ATankPawn::SetPatrollingPoints(const TArray<ATargetPoint*>& NewPatrollingPoints)
+{
+	PatrollingPoints = NewPatrollingPoints;
 }

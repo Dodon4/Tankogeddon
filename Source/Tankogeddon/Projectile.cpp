@@ -29,6 +29,11 @@ void AProjectile::Start()
 void AProjectile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherActor == GetInstigator())
+	{
+		return;
+	}
+
 	UE_LOG(LogTemp, Warning, TEXT("Projectile %s collided with %s. "), *GetName(), *OtherActor->GetName());
 	if (OtherComp && OtherComp->GetCollisionObjectType() == ECollisionChannel::ECC_Destructible)
 	{
@@ -36,15 +41,11 @@ void AProjectile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 	}
 	else if (IDamageTaker* DamageTaker = Cast<IDamageTaker>(OtherActor))
 	{
-		AActor* MyInstigator = GetInstigator();
-		if (OtherActor != MyInstigator)
-		{
-			FDamageData DamageData;
-			DamageData.DamageValue = Damage;
-			DamageData.DamageMaker = this;
-			DamageData.Instigator = MyInstigator;
-			DamageTaker->TakeDamage(DamageData);
-		}
+        FDamageData DamageData;
+        DamageData.DamageValue = Damage;
+        DamageData.DamageMaker = this;
+        DamageData.Instigator = GetInstigator();
+		DamageTaker->TakeDamage(DamageData);
 	}
 	Destroy();
 }

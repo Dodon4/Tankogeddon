@@ -13,6 +13,8 @@
 #include "Tankogeddon.h"
 #include "AmmoBox.h"
 #include "TimerManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
 
 void AParentFirePoint::TakeDamage(FDamageData DamageData)
 {
@@ -22,23 +24,24 @@ void AParentFirePoint::TakeDamage(FDamageData DamageData)
 
 void AParentFirePoint::Die()
 {
-	DestroyEffect->ActivateSystem();
-	DestroyAudioEffect->Play();
-	AAmmoBox* Projectile = GetWorld()->SpawnActor<AAmmoBox>(AmmoboxClass, GetActorLocation(), GetActorRotation());
-	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &AParentFirePoint::KillExposion, 1.f, false);
-	//Destroy();
-}
-void AParentFirePoint::KillExposion()
-{
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DestuctionParticleSystem, GetActorTransform());
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), DestructionSound, GetActorLocation());
+	if (AmmoboxClass)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.bNoFail = true;
+		GetWorld()->SpawnActor<AAmmoBox>(AmmoboxClass, GetActorTransform(), SpawnParams);
+	}
 	Destroy();
 }
+
 void AParentFirePoint::DamageTaken(float InDamage)
 {
 	UE_LOG(LogTankogeddon, Warning, TEXT("Turret %s taked damage:%f Health:%f"), *GetName(), InDamage, HealthComponent->GetHealth());
 	if (this == GetWorld()->GetFirstPlayerController()->GetPawn())
 	{
-		DestroyEffect->ActivateSystem();
-		DestroyAudioEffect->Play();
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DestuctionParticleSystem, GetActorLocation());
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), DestructionSound, GetActorLocation());
 	}
 }
 void AParentFirePoint::BeginPlay()
@@ -54,6 +57,8 @@ void AParentFirePoint::BeginPlay()
 
 void AParentFirePoint::Destroyed()
 {
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DestuctionParticleSystem, GetActorTransform());
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), DestructionSound, GetActorLocation());
 	if (Cannon)
 	{
 		Cannon->Destroy();
@@ -61,12 +66,12 @@ void AParentFirePoint::Destroyed()
 }
 AParentFirePoint::AParentFirePoint()
 {
-	DestroyEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shoot effect"));
-	DestroyEffect->SetupAttachment(BodyMesh);
+	PrimaryActorTick.bCanEverTick = true;
+	//DestroyEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shoot effect"));
+	//DestroyEffect->SetupAttachment(BodyMesh);
 
-
-	DestroyAudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio effect"));
-	DestroyAudioEffect->SetupAttachment(BodyMesh);
+	//DestroyAudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio effect"));
+	//DestroyAudioEffect->SetupAttachment(BodyMesh);
 }
 void AParentFirePoint::Fire()
 {
