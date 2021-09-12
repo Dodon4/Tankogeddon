@@ -18,7 +18,7 @@ APhysicsProjectile::APhysicsProjectile()
 
 void APhysicsProjectile::Start()
 {
-    MoveVector = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+    MoveVector = GetActorForwardVector() * TrajectorySimulationSpeed;
     CurrentTrajectory = PhysicsComponent->GenerateTrajectory(GetActorLocation(), MoveVector, TrajectorySimulationMaxTime, TrajectorySimulationTimeStep, 0);
     if (bShowTrajectory)
     {
