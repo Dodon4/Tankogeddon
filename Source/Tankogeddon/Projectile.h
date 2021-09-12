@@ -39,6 +39,8 @@ public:
     AProjectile();
 
     void Explode();
+    
+    void ExplodeDamage(AActor* OtherActor);
 
     virtual void Start();
 

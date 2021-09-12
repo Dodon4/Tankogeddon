@@ -110,31 +110,35 @@ void AProjectile::Explode()
                 continue;
             }
 
-            IDamageTaker* DamageTakerActor = Cast<IDamageTaker>(OtherActor);
-            if (DamageTakerActor)
-            {
-                FDamageData DamageData;
-                DamageData.DamageValue = Damage;
-                DamageData.Instigator = GetOwner();
-                DamageData.DamageMaker = this;
-
-                DamageTakerActor->TakeDamage(DamageData);
-            }
-            else
-            {
-                UPrimitiveComponent* PrimComp = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
-                if (PrimComp)
-                {
-                    if (PrimComp->IsSimulatingPhysics())
-                    {
-                        FVector ForceVector = OtherActor->GetActorLocation() - GetActorLocation();
-                        ForceVector.Normalize();
-                        PrimComp->AddImpulse(ForceVector * PushForce, NAME_None, true);
-                    }
-                }
-            }
+            ExplodeDamage(OtherActor);
 
         }
     }
 
+}
+void AProjectile::ExplodeDamage(AActor* OtherActor)
+{
+    IDamageTaker* DamageTakerActor = Cast<IDamageTaker>(OtherActor);
+    if (DamageTakerActor)
+    {
+        FDamageData DamageData;
+        DamageData.DamageValue = Damage;
+        DamageData.Instigator = GetOwner();
+        DamageData.DamageMaker = this;
+
+        DamageTakerActor->TakeDamage(DamageData);
+    }
+    else
+    {
+        UPrimitiveComponent* PrimComp = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
+        if (PrimComp)
+        {
+            if (PrimComp->IsSimulatingPhysics())
+            {
+                FVector ForceVector = OtherActor->GetActorLocation() - GetActorLocation();
+                ForceVector.Normalize();
+                PrimComp->AddImpulse(ForceVector * PushForce, NAME_None, true);
+            }
+        }
+    }
 }
