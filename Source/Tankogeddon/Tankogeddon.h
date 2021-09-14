@@ -3,5 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-DECLARE_LOG_CATEGORY_EXTERN(TankLog, Log, All);
+#include <Logging/LogMacros.h>
 
+DECLARE_LOG_CATEGORY_EXTERN(LogTankogeddon, Log, All);

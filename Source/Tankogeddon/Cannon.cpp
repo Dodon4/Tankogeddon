@@ -6,6 +6,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
 #include "Engine/Engine.h"
+#include "Projectile.h"
+#include "DrawDebugHelpers.h"
+#include "DamageTaker.h"
 ACannon::ACannon()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -38,10 +41,46 @@ void ACannon::Fire()
 	if (Type == ECannonType::FireProjectile)
 	{
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
+
+		AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
+		if (Projectile)
+		{
+			Projectile->SetInstigator(GetInstigator());
+			Projectile->Start();
+		}
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Special fire"));
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
+
+		FHitResult HitResult;
+		FCollisionQueryParams TraceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
+		TraceParams.bTraceComplex = true;
+		TraceParams.bReturnPhysicalMaterial = false;
+
+		FVector Start = ProjectileSpawnPoint->GetComponentLocation();
+		FVector End = ProjectileSpawnPoint->GetForwardVector() * FireRange + Start;
+		if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility, TraceParams))
+		{
+			DrawDebugLine(GetWorld(), Start, HitResult.Location, FColor::Red, false, 0.5f, 0, 5);
+			if (IDamageTaker* DamageTaker = Cast<IDamageTaker>(HitResult.Actor.Get()))
+			{
+				AActor* MyInstigator = GetInstigator();
+				if (HitResult.Actor.Get() != MyInstigator)
+				{
+					FDamageData DamageData;
+					DamageData.DamageValue = FireDamage;
+					DamageData.DamageMaker = this;
+					DamageData.Instigator = MyInstigator;
+					DamageTaker->TakeDamage(DamageData);
+				}
+			}
+		}
+		else
+		{
+			DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 0.5f, 0, 5);
+		}
 	}
 	Ammunition--;
 	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1.f / FireRate, false);
@@ -72,12 +111,47 @@ void ACannon::Special()
 	if (Type == ECannonType::FireProjectile)
 	{
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
+
+		AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
+		if (Projectile)
+		{
+			Projectile->Start();
+		}
 		UE_LOG(LogTemp, Warning, TEXT("Special fire"));
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
 		UE_LOG(LogTemp, Warning, TEXT("Special fire"));
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
+
+		FHitResult HitResult;
+		FCollisionQueryParams TraceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
+		TraceParams.bTraceComplex = true;
+		TraceParams.bReturnPhysicalMaterial = false;
+
+		FVector Start = ProjectileSpawnPoint->GetComponentLocation();
+		FVector End = ProjectileSpawnPoint->GetForwardVector() * FireRange + Start;
+		if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility, TraceParams))
+		{
+			DrawDebugLine(GetWorld(), Start, HitResult.Location, FColor::Red, false, 0.5f, 0, 5);
+			DrawDebugLine(GetWorld(), Start, HitResult.Location, FColor::Red, false, 0.5f, 0, 5);
+			if (IDamageTaker* DamageTaker = Cast<IDamageTaker>(HitResult.Actor.Get()))
+			{
+				AActor* MyInstigator = GetInstigator();
+				if (HitResult.Actor.Get() != MyInstigator)
+				{
+					FDamageData DamageData;
+					DamageData.DamageValue = FireDamage;
+					DamageData.DamageMaker = this;
+					DamageData.Instigator = MyInstigator;
+					DamageTaker->TakeDamage(DamageData);
+				}
+			}
+		}
+		else
+		{
+			DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 0.5f, 0, 5);
+		}
 	}
 }
 bool ACannon::IsReadyToFire()
@@ -100,4 +174,12 @@ void ACannon::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 
 	GetWorld()->GetTimerManager().ClearTimer(ReloadTimerHandle);
+}
+int ACannon::GetAmmunition()
+{
+	return Ammunition;
+}
+void ACannon::SetAmmunition(int SavedAmmunition)
+{
+	Ammunition = SavedAmmunition;
 }
