@@ -14,12 +14,16 @@
 #include "AmmoBox.h"
 #include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "HealthBarWidget.h"
 #include "Engine/World.h"
 
 void AParentFirePoint::TakeDamage(FDamageData DamageData)
 {
 	UE_LOG(LogTankogeddon, Warning, TEXT("Turret %s taked damage:%f "), *GetName(), DamageData.DamageValue);
 	HealthComponent->TakeDamage(DamageData);
+	UHealthBarWidget* myProgress =
+		Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
+	myProgress->SetHpValue(HealthComponent->GetHealthState());
 }
 
 void AParentFirePoint::Die()
@@ -42,7 +46,12 @@ void AParentFirePoint::DamageTaken(float InDamage)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DestuctionParticleSystem, GetActorLocation());
 		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), DestructionSound, GetActorLocation());
+
+		//UHealthBarWidget* myProgress =
+		//	Cast<UHealthBarWidget>(comp->GetUserWidgetObject());
+		//myProgress->SetHpValue(1.f);
 	}
+
 }
 void AParentFirePoint::BeginPlay()
 {
@@ -52,6 +61,8 @@ void AParentFirePoint::BeginPlay()
 	Params.Owner = this;
 	Cannon = GetWorld()->SpawnActor<ACannon>(CannonClass, Params);
 	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	
+
 
 }
 
@@ -67,6 +78,11 @@ void AParentFirePoint::Destroyed()
 AParentFirePoint::AParentFirePoint()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	HealthBar = CreateDefaultSubobject<UWidgetComponent>("BarHP");
+	HealthBar->SetWidgetClass(UHealthBarWidget::StaticClass());
+
+	// 
 	//DestroyEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shoot effect"));
 	//DestroyEffect->SetupAttachment(BodyMesh);
 
